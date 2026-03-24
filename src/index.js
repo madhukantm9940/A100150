@@ -5,25 +5,7 @@ const sdk = require('node-appwrite');
  * Diagnostic Version - To resolve SDK constructor issues
  */
 module.exports = async function (context) {
-    // Log available keys to find where Messaging/Client are hidden
-    context.log(`SDK Type: ${typeof sdk}`);
-    context.log(`SDK Keys: ${Object.keys(sdk).join(', ')}`);
-    if (sdk.default) {
-        context.log(`SDK Default Keys: ${Object.keys(sdk.default).join(', ')}`);
-    }
-
-    // Resolution strategy: Direct -> Default -> Error
-    const Client = sdk.Client || (sdk.default ? sdk.default.Client : null);
-    const Messaging = sdk.Messaging || (sdk.default ? sdk.default.Messaging : null);
-    const ID = sdk.ID || (sdk.default ? sdk.default.ID : null);
-
-    if (!Client || !Messaging) {
-        context.error('SDK services not found in provided node-appwrite package.');
-        return context.res.json({ 
-            error: 'SDK_INIT_FAILED', 
-            available_keys: Object.keys(sdk) 
-        }, 500);
-    }
+    const { Client, Messaging, ID } = sdk;
 
     const client = new Client();
     const messaging = new Messaging(client);
