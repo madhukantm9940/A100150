@@ -91,17 +91,25 @@ module.exports = async function (context) {
             return context.res.json({ message: 'No registered recipients' });
         }
 
-        // In SDK v14+, the order for createPush is: (messageId, title, body, topics, users, targets, data, draft, scheduledAt)
+        // In SDK v14+, the positional signature is very long: 
+        // (messageId, title, body, topics, users, targets, data, action, image, icon, sound, color, tag, badge, draft, scheduledAt...)
         const response = await messaging.createPush(
             ID.unique(),
             title,
             body,
-            [], // Topics
-            userIds, // Users (Actual User IDs resolved from emails)
-            [], // Targets
-            null, // Data (Optional JSON string - Must be null or string)
-            false, // Draft
-            null, // Scheduled
+            [],    // 4: Topics
+            userIds, // 5: Users
+            [],    // 6: Targets
+            null,  // 7: Data
+            null,  // 8: Action
+            null,  // 9: Image
+            null,  // 10: Icon
+            null,  // 11: Sound
+            null,  // 12: Color
+            null,  // 13: Tag
+            null,  // 14: Badge
+            false, // 15: Draft (MUST BE FALSE TO SEND)
+            null   // 16: Scheduled
         );
 
         context.log(`Push Delivery Successful: ${JSON.stringify(response)}`);
