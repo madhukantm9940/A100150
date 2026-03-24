@@ -91,25 +91,14 @@ module.exports = async function (context) {
             return context.res.json({ message: 'No registered recipients' });
         }
 
-        // In SDK v14+, the positional signature is very long: 
-        // (messageId, title, body, topics, users, targets, data, action, image, icon, sound, color, tag, badge, draft, scheduledAt...)
+        // Simplify to bare essentials to avoid 'Server Error' from optional params
         const response = await messaging.createPush(
             ID.unique(),
             title,
             body,
-            [],    // 4: Topics
-            userIds, // 5: Users
-            [],    // 6: Targets
-            null,  // 7: Data
-            null,  // 8: Action
-            null,  // 9: Image
-            null,  // 10: Icon
-            null,  // 11: Sound
-            null,  // 12: Color
-            null,  // 13: Tag
-            null,  // 14: Badge
-            false, // 15: Draft (MUST BE FALSE TO SEND)
-            null   // 16: Scheduled
+            [],     // 4: Topics
+            userIds // 5: Users
+            // Omit remaining optional params to let Appwrite use defaults
         );
 
         context.log(`Push Delivery Successful: ${JSON.stringify(response)}`);
