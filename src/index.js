@@ -69,16 +69,16 @@ module.exports = async function (context) {
 
         context.log(`Dispatching to ${targetEmails.length} targets...`);
 
-        // In SDK v13+, createMessage was renamed to createPush for push notifications
+        // In SDK v14+, the order for createPush is: (messageId, title, body, topics, users, targets, draft, scheduledAt)
         await messaging.createPush(
             ID.unique(),
             title,
             body,
             [], // Topics
-            [], // Users
-            targetEmails, // Targets (FCM tokens registered as push targets)
-            true, // Draft
-            false, // Scheduled
+            targetEmails, // Users (targeted by their IDs/Emails)
+            [], // Targets
+            false, // Draft (MUST be false to send immediately!)
+            null, // Scheduled
         );
 
         return context.res.json({
