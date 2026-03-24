@@ -87,8 +87,8 @@ module.exports = async function (context) {
 
         context.log(`Dispatching to ${targetEmails.length} targets...`);
 
-        // We use the 'fcm' provider and identifiers (which we set as FCM tokens in the app)
-        await messaging.createMessage(
+        // In SDK v13+, createMessage was renamed to createPush for push notifications
+        await messaging.createPush(
             ID.unique(),
             title,
             body,
