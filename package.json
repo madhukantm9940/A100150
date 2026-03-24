@@ -4,6 +4,6 @@
   "description": "Universal Push Notification service for A100150 Hub",
   "main": "src/index.js",
   "dependencies": {
-    "node-appwrite": "11.1.0"
+    "node-appwrite": "14.0.0"
   }
 }
