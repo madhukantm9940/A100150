@@ -91,8 +91,7 @@ module.exports = async function (context) {
             return context.res.json({ message: 'No registered recipients' });
         }
 
-        // In SDK v14+, the order for createPush is: (messageId, title, body, topics, users, targets, draft, scheduledAt)
-        await messaging.createPush(
+        const response = await messaging.createPush(
             ID.unique(),
             title,
             body,
@@ -103,13 +102,16 @@ module.exports = async function (context) {
             null, // Scheduled
         );
 
+        context.log(`Push Delivery Successful: ${JSON.stringify(response)}`);
+
         return context.res.json({
             success: true,
-            message: `Dispatched ${title} to ${targetEmails.length} targets`
+            message: `Dispatched ${title} to ${userIds.length} users`
         });
 
     } catch (err) {
         context.error(`Notification Error: ${err.message}`);
+        context.log(`FIXED LOG: ${err.message}. Stack: ${err.stack}`);
         return context.res.json({ error: err.message }, 500);
     }
 };
