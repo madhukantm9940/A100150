@@ -1,10 +1,19 @@
-const { Client, Messaging, ID } = require('node-appwrite');
+const sdk = require('node-appwrite');
 
 /**
  * Universal Push Notifier - A100150 Hub
  * Standard Logic for: Meetings, Projects, and Points
  */
 module.exports = async function (context) {
+    // Robustly handle different SDK export styles (CommonJS vs ESM)
+    const Client = sdk.Client || (sdk.default ? sdk.default.Client : null);
+    const Messaging = sdk.Messaging || (sdk.default ? sdk.default.Messaging : null);
+    const ID = sdk.ID || (sdk.default ? sdk.default.ID : null);
+
+    if (!Client || !Messaging) {
+        throw new Error('Could not initialize Appwrite SDK services. Please check node-appwrite version.');
+    }
+
     const client = new Client();
     const messaging = new Messaging(client);
 
