@@ -10,9 +10,9 @@ module.exports = async function (context) {
     const client = new Client();
     const messaging = new Messaging(client);
 
-    // Initialize with environment variables
+    // Initialize with environment variables (with fallback for endpoint)
     client
-        .setEndpoint(process.env.APPWRITE_FUNCTION_ENDPOINT)
+        .setEndpoint(process.env.APPWRITE_FUNCTION_ENDPOINT || 'https://cloud.appwrite.io/v1')
         .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
         .setKey(process.env.APPWRITE_FUNCTION_API_KEY);
 
