@@ -5,10 +5,19 @@ const sdk = require('node-appwrite');
  * Diagnostic Version - To resolve SDK constructor issues
  */
 module.exports = async function (context) {
-    const { Client, Messaging, ID } = sdk;
+    const Client = sdk.Client || (sdk.default ? sdk.default.Client : null);
+    const Messaging = sdk.Messaging || (sdk.default ? sdk.default.Messaging : null);
+    const Users = sdk.Users || (sdk.default ? sdk.default.Users : null);
+    const Query = sdk.Query || (sdk.default ? sdk.default.Query : null);
+    const ID = sdk.ID || (sdk.default ? sdk.default.ID : null);
+
+    if (!Client || !Messaging || !Users) {
+        throw new Error('Could not initialize Appwrite SDK services. Please check node-appwrite version.');
+    }
 
     const client = new Client();
     const messaging = new Messaging(client);
+    const users = new Users(client);
 
     // Initialize with environment variables (with fallback for regional SGP endpoint)
     client
@@ -67,7 +76,20 @@ module.exports = async function (context) {
             return context.res.json({ message: 'No targets identified' });
         }
 
-        context.log(`Dispatching to ${targetEmails.length} targets...`);
+        context.log(`Dispatching to ${targetEmails.length} emails...`);
+
+        // Resolve emails to actual Appwrite User IDs (UIDs must be < 36 chars and alphanumeric)
+        const userList = await users.list([
+            Query.equal('email', targetEmails)
+        ]);
+        const userIds = userList.users.map(u => u.$id);
+        
+        context.log(`Resolved ${userIds.length} User IDs from ${targetEmails.length} emails.`);
+
+        if (userIds.length === 0) {
+            context.log('No registered users found for these emails.');
+            return context.res.json({ message: 'No registered recipients' });
+        }
 
         // In SDK v14+, the order for createPush is: (messageId, title, body, topics, users, targets, draft, scheduledAt)
         await messaging.createPush(
@@ -75,9 +97,9 @@ module.exports = async function (context) {
             title,
             body,
             [], // Topics
-            targetEmails, // Users (targeted by their IDs/Emails)
+            userIds, // Users (Actual User IDs resolved from emails)
             [], // Targets
-            false, // Draft (MUST be false to send immediately!)
+            false, // Draft
             null, // Scheduled
         );
 
