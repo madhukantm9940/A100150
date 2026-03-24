@@ -1,12 +1,12 @@
-const sdk = require('node-appwrite');
+const { Client, Messaging, ID } = require('node-appwrite');
 
 /**
  * Universal Push Notifier - A100150 Hub
  * Standard Logic for: Meetings, Projects, and Points
  */
 module.exports = async function (context) {
-    const client = new sdk.Client();
-    const messaging = new sdk.Messaging(client);
+    const client = new Client();
+    const messaging = new Messaging(client);
 
     // Initialize with environment variables
     client
@@ -69,7 +69,7 @@ module.exports = async function (context) {
 
         // We use the 'fcm' provider and identifiers (which we set as FCM tokens in the app)
         await messaging.createMessage(
-            sdk.ID.unique(),
+            ID.unique(),
             title,
             body,
             [], // Topics
