@@ -137,7 +137,7 @@ module.exports = async function (context) {
             null,        // 10: Sound
             null,        // 11: Color
             null,        // 12: Tag
-            pushData     // 13: Data
+            JSON.stringify(pushData) // 13: Data (Must be a JSON string)
         );
 
         context.log(`Push Delivery Successful: ${JSON.stringify(response)}`);
