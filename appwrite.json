@@ -10,9 +10,7 @@
             "entrypoint": "src/index.js",
             "execute": [],
             "events": [
-                "databases.69c224920019580524b5.collections.meetings.documents.*.create",
-                "databases.69c224920019580524b5.collections.group_projects.documents.*.create",
-                "databases.69c224920019580524b5.collections.event_projects.documents.*.create",
+                "databases.69c224920019580524b5.collections.*.documents.*.create",
                 "databases.69c224920019580524b5.collections.student_points.documents.*.update"
             ],
             "schedule": "0 9 * * 1",
