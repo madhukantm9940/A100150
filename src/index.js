@@ -124,21 +124,14 @@ module.exports = async function (context) {
             type: trigger === 'schedule' ? 'reminder' : (event.includes('student_points') ? 'pointUpdate' : (event.includes('meetings') ? 'meeting' : 'project'))
         };
 
-        const response = await messaging.createPush(
-            ID.unique(),
-            title,
-            body,
-            [],          // 4: Topics
-            userIds,     // 5: Users
-            [],          // 6: Targets
-            'FLUTTER_NOTIFICATION_CLICK', // 7: Action (Required for some reason in v14)
-            null,        // 8: Image
-            null,        // 9: Icon
-            null,        // 10: Sound
-            null,        // 11: Color
-            null,        // 12: Tag
-            JSON.stringify(pushData) // 13: Data (Must be a JSON string)
-        );
+        const response = await messaging.createPush({
+            messageId: ID.unique(),
+            title: title,
+            body: body,
+            users: userIds,
+            action: 'FLUTTER_NOTIFICATION_CLICK',
+            data: pushData
+        });
 
         context.log(`Push Delivery Successful: ${JSON.stringify(response)}`);
 
