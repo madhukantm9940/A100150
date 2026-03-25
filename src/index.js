@@ -27,9 +27,11 @@ module.exports = async function (context) {
 
     try {
         const payload = context.req.body;
-        // The event/trigger tells us what triggered the function
         const event = context.req.headers['x-appwrite-event'] || '';
         const trigger = context.req.headers['x-appwrite-trigger'] || '';
+
+        context.log(`--- DEBUG: Triggered by ${trigger} (Event: ${event}) ---`);
+        context.log(`--- DEBUG: Payload: ${JSON.stringify(payload)} ---`);
         
         let title = 'A100150 Hub Update';
         let body = 'You have a new update in your student hub.';
