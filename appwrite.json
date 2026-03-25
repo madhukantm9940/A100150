@@ -15,7 +15,7 @@
                 "databases.*.collections.event_projects.documents.*.create",
                 "databases.*.collections.student_points.documents.*.update"
             ],
-            "schedule": "",
+            "schedule": "0 9 * * 1",
             "timeout": 15,
             "enabled": true,
             "logging": true,
