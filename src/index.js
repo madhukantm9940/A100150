@@ -88,7 +88,7 @@ module.exports = async function (context) {
         }
 
         // --- 4. EXECUTION ---
-        if (targetEmails.length === 0) {
+        if (userIds.length === 0 && targetEmails.length === 0) {
             context.log('No eligible targets found for this event.');
             return context.res.json({ message: 'No targets identified' });
         }
