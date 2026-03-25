@@ -51,7 +51,7 @@ module.exports = async function (context) {
         else if (event.includes('collections.group_projects')) {
             if (event.includes('.create')) {
                 title = '🚀 New Group Project';
-                body = `Project: ${payload.projectName}\nTrack: ${payload.track || 'A100150'}`;
+                body = `Project: ${payload.name}\nTrack: ${payload.track || 'A100150'}`;
                 
                 // Group Projects notify EVERYONE
                 try {
