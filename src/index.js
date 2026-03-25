@@ -42,7 +42,7 @@ module.exports = async function (context) {
         if (event.includes('collections.meetings')) {
             if (event.includes('.create')) {
                 title = '📅 New Sync Scheduled';
-                body = `Topic: ${payload.title}\n"${payload.purpose}"`;
+                body = `Topic: ${payload.title}\n"${payload.purpose || ''}"`;
                 targetEmails = payload.selectedMemberEmails || [];
             }
         } 
@@ -51,14 +51,23 @@ module.exports = async function (context) {
         else if (event.includes('collections.group_projects')) {
             if (event.includes('.create')) {
                 title = '🚀 New Group Project';
-                body = `Project: ${payload.title}\nTrack: ${payload.track || 'A100150'}`;
-                targetEmails = payload.eligibleMemberEmails || [];
+                body = `Project: ${payload.projectName}\nTrack: ${payload.track || 'A100150'}`;
+                
+                // Group Projects notify EVERYONE
+                try {
+                    const allUsers = await users.list();
+                    userIds = allUsers.users.map(u => u.$id);
+                    context.log(`Group Project: Targeting all ${userIds.length} registered users.`);
+                } catch (userError) {
+                    context.error(`Error fetching users: ${userError.message}`);
+                    return context.res.json({ error: 'Failed to fetch user list for global notification' }, 500);
+                }
             }
         }
         else if (event.includes('collections.event_projects')) {
             if (event.includes('.create')) {
                 title = '🏆 New Event Challenge';
-                body = `Event: ${payload.title}\nDon't miss out!`;
+                body = `Event: ${payload.eventName}\nDon't miss out!`;
                 targetEmails = payload.eligibleMemberEmails || [];
             }
         }
@@ -119,11 +128,16 @@ module.exports = async function (context) {
             ID.unique(),
             title,
             body,
-            [],       // 4: Topics
-            userIds,  // 5: Users
-            [],       // 6: Targets
-            null,     // 7: ScheduledAt
-            pushData  // 8: Data
+            [],          // 4: Topics
+            userIds,     // 5: Users
+            [],          // 6: Targets
+            'FLUTTER_NOTIFICATION_CLICK', // 7: Action (Required for some reason in v14)
+            null,        // 8: Image
+            null,        // 9: Icon
+            null,        // 10: Sound
+            null,        // 11: Color
+            null,        // 12: Tag
+            pushData     // 13: Data
         );
 
         context.log(`Push Delivery Successful: ${JSON.stringify(response)}`);
